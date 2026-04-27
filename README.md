@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Valmir
 
-## Getting Started
+Landing page de portfólio pessoal. Next.js 16, Tailwind v4, TypeScript. Deploy na Vercel.
 
-First, run the development server:
+## Rodar localmente
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) no navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Validar SSG (conteúdo server-rendered)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build && npm run start
+# Em outro terminal:
+curl http://localhost:3000 | grep "Landing pages"
+```
 
-## Learn More
+Deve retornar o texto do H1 — confirmando que o HTML é gerado no servidor.
 
-To learn more about Next.js, take a look at the following resources:
+## Assets que você precisa adicionar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Arquivo | Tamanho recomendado | Descrição |
+|---|---|---|
+| `public/droxly-screenshot.png` | 1200×675 px | Print da landing da Droxly |
+| `public/og-image.png` | 1200×630 px | Imagem de preview para WhatsApp/Telegram/Instagram |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Coloque os dois arquivos na pasta `public/` antes do deploy.
 
-## Deploy on Vercel
+## Customizar antes de deployar
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Email no footer** → `lib/constants.ts`, variável `EMAIL`
+- **URL final do site** → `app/layout.tsx`, campo `openGraph.url`
+- **Número WhatsApp** → já está configurado em `lib/constants.ts` (`WA_URL`)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy na Vercel
+
+### Opção 1 — Via CLI (recomendado)
+
+```bash
+npm i -g vercel
+vercel
+```
+
+Siga o wizard. Na primeira vez vai pedir login e vincular ao projeto.
+Para deploys futuros, só rodar `vercel --prod`.
+
+### Opção 2 — Via GitHub
+
+1. Faça push do repositório para o GitHub
+2. Acesse [vercel.com/new](https://vercel.com/new)
+3. Importe o repositório
+4. Clique em **Deploy** — sem precisar configurar nada, a Vercel detecta Next.js automaticamente
+
+### Após o deploy
+
+1. Pegue a URL gerada pela Vercel (ex: `https://portfolio-xyz.vercel.app`)
+2. Atualize `openGraph.url` em `app/layout.tsx` com essa URL
+3. Faça um novo deploy
+
+## Estrutura
+
+```
+├── app/
+│   ├── layout.tsx      # Meta tags SEO + Open Graph
+│   ├── page.tsx        # Página principal (importa seções)
+│   └── globals.css     # Tailwind + animações
+├── components/
+│   ├── Hero.tsx        # Seção 1 — hero com CTA WhatsApp
+│   ├── Cases.tsx       # Seção 2 — case Droxly
+│   ├── Services.tsx    # Seção 3 — o que está incluso
+│   ├── HowItWorks.tsx  # Seção 4 — como funciona
+│   ├── CtaFinal.tsx    # Seção 5 — CTA final
+│   └── Footer.tsx      # Footer
+├── lib/
+│   └── constants.ts    # WhatsApp URL e email
+└── public/             # Imagens (adicionar antes do deploy)
+```
